@@ -1,6 +1,17 @@
 import pandas as pd
 import csv
 from sqlalchemy import create_engine, Column, Integer, String, Float, MetaData, Table
+import os
+import sys
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+import django
+django.setup()
+
+from tariffstrack.models import Tariff
+
+
 # from sqlalchemy.orm import declarative_base
 
 # Define a converter function to strip '%' and convert to float
@@ -63,7 +74,7 @@ def replace_country_names(df, countries):
     return df
  
 # Connect to the database
-engine = create_engine('sqlite:///test.db')
+# engine = create_engine('sqlite:///../db.sqlite3', echo=True)
 
 # Base = declarative_base()
 
@@ -79,14 +90,30 @@ engine = create_engine('sqlite:///test.db')
 #     rate = Column(Float)
 # Base.metadata.create_all(engine)
 
-df = get_tariff_data()
-countries = match_country_codes(df)
-final_df = replace_country_names(df, countries)
 
-print(final_df.to_string())
+df = get_tariff_data() # Grab the tariff data from CSV
+countries = match_country_codes(df) # Match the country codes to country names and return a dictionary
+final_df = replace_country_names(df, countries) # Replace the country names in the tariff dataframe with the country codes
 
-confirmation = input("Do you want to insert this data into the database? (y/n): ")
-if confirmation == 'y':
-    # Insert tariff dataframe into the database
-    print("Inserting...")
-    final_df.to_sql('tariffs', engine, if_exists='replace', index=False)
+#print(final_df.to_string())
+
+# Iterate through the Tariff DataForm to create a Tariff object for each row and add to the database
+for index, row in final_df.iterrows():
+    # Create a new Tariff object for each row
+    tariff = Tariff(
+        country_id=row['Geography'],
+        target_type=row['Target type'],
+        target=row['Target'],
+        first_announced=row['First announced'],
+        date_in_effect=row['Date in effect'],
+        rate=row['Rate']
+    )
+    print("Inserting tarrifs into database...")
+    # Save the Tariff object to the database
+    tariff.save()
+
+# confirmation = input("Do you want to insert this data into the database? (y/n): ")
+# if confirmation == 'y':
+    # # Insert tariff dataframe into the database
+    # print("Inserting...")
+    # final_df.to_sql('tariffstrack_tariff', engine, if_exists='replace', index=False)

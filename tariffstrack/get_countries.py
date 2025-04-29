@@ -2,6 +2,15 @@ import pandas as pd
 from sqlalchemy import create_engine, Column, Integer, String, MetaData, Table, ForeignKey
 import csv
 from sqlalchemy.orm import declarative_base
+import os
+import sys
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+import django
+django.setup()
+
+from tariffstrack.models import Country
 
 def match_country_codes(df):
     # read the list of countries paired with ISO codes and put into a dictionary
@@ -32,10 +41,21 @@ countries = match_country_codes(df)
 # Add headers and convert the countries dictionary to a DataFrame
 countries_df = pd.DataFrame(countries.items(), columns=['country','code'])
 
-# print(countries_df.to_string())
+print(countries_df.to_string())
+
+# Iterate through the Country DataForm to create a Country object for each row and add to the database
+for index, row in countries_df.iterrows():
+    # Create a new Country object for each row
+    country = Country(
+        name=row['country'],
+        code=row['code']
+    )
+    # Save the Country object to the database
+    country.save()
+
 
 #Connect to the database
-engine = create_engine('sqlite:///test.db')
+# engine = create_engine('sqlite:///../db.sqlite3', echo=True)
 
 # Base = declarative_base()
 
@@ -48,6 +68,8 @@ engine = create_engine('sqlite:///test.db')
 
 # Base.metadata.create_all(engine)
 
-# Insert countries into the countries table
-print("Inserting...")
-countries_df.to_sql('countries', engine, if_exists='replace', index=False)
+# confirmation = input("Do you want to insert this data into the database? (y/n): ")
+# if confirmation == 'y':
+#     # Insert tariff dataframe into the database
+#     print("Inserting...")
+#     countries_df.to_sql('tariffstrack_country', engine, if_exists='replace', index=False)

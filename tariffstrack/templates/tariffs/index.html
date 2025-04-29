@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Trump Tariffs</title>
+</head>
+<body>
+    <h1>Trump's Tariffs</h1>
+    {% if tariff_list %}
+    <ul>
+    {% for tariff in tariff_list %}
+        <li><a href="{% url 'tariffstrack:country' tariff.country_id %}">{{ tariff.country }} - {{ tariff.rate }}% - {{ tariff.target }} - {{ tariff.target_type }} - {{ tariff.first_announced }} - {{ tariff.date_in_effect }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No tariffs are available.</p>
+{% endif %}
+</body>
+</html>
