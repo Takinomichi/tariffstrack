@@ -15,5 +15,5 @@ class Tariff(models.Model):
     date_in_effect = models.CharField(max_length=255)
     rate = models.FloatField()
 
-    # def __str__(self):
-    #     return self.country.name + " - " + self.target_type + " - " + self.target + " - " + str(self.rate*100.00) + "%"
+    def __str__(self):
+         return self.country.name + " - " + self.target_type + " - " + self.target + " - " + str(self.rate*100.00) + "%"
