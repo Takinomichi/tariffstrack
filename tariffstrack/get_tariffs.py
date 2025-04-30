@@ -95,22 +95,24 @@ df = get_tariff_data() # Grab the tariff data from CSV
 countries = match_country_codes(df) # Match the country codes to country names and return a dictionary
 final_df = replace_country_names(df, countries) # Replace the country names in the tariff dataframe with the country codes
 
-#print(final_df.to_string())
+print(final_df.to_string())
 
-# Iterate through the Tariff DataForm to create a Tariff object for each row and add to the database
-for index, row in final_df.iterrows():
-    # Create a new Tariff object for each row
-    tariff = Tariff(
-        country_id=row['Geography'],
-        target_type=row['Target type'],
-        target=row['Target'],
-        first_announced=row['First announced'],
-        date_in_effect=row['Date in effect'],
-        rate=row['Rate']
-    )
-    print("Inserting tarrifs into database...")
-    # Save the Tariff object to the database
-    tariff.save()
+confirmation = input("Do you want to insert this data into the database? (y/n): ")
+if confirmation == 'y':
+    # Iterate through the Tariff DataForm to create a Tariff object for each row and add to the database
+    for index, row in final_df.iterrows():
+        # Create a new Tariff object for each row
+        tariff = Tariff(
+            country_id=row['Geography'],
+            target_type=row['Target type'],
+            target=row['Target'],
+            first_announced=row['First announced'],
+            date_in_effect=row['Date in effect'],
+            rate=row['Rate']
+        )
+        print(f"Inserting {row['Geography']} tariff into database...")
+        # Save the Tariff object to the database
+        tariff.save()
 
 # confirmation = input("Do you want to insert this data into the database? (y/n): ")
 # if confirmation == 'y':

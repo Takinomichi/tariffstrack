@@ -21,17 +21,17 @@ def index(request):
     }
     return render(request, "tariffs/index.html", context)
 
-def country(request, country_id):
+# def country(request, country_id):
     
-    tariff_list = get_list_or_404(Tariff, country_id__exact=country_id)
+#     tariff_list = get_list_or_404(Tariff, country_id__exact=country_id)
 
-    # Change the rates into integers percentages
-    integer_tariff_list = make_integer(tariff_list)
+#     # Change the rates into integers percentages
+#     integer_tariff_list = make_integer(tariff_list)
 
-    context = {
-            "tariff_list": integer_tariff_list,
-            "country_id": country_id,
-            "country_name": tariff_list[0].country.name,
-        }
-    # pass the list as a context variable named "tariff_list"
-    return render(request, "tariffs/country.html", context)    
+#     context = {
+#             "tariff_list": integer_tariff_list,
+#             "country_id": country_id,
+#             "country_name": tariff_list[0].country.name,
+#         }
+#     # pass the list as a context variable named "tariff_list"
+#     return render(request, "tariffs/country.html", context)    
