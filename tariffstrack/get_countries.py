@@ -43,15 +43,17 @@ countries_df = pd.DataFrame(countries.items(), columns=['country','code'])
 
 print(countries_df.to_string())
 
-# Iterate through the Country DataForm to create a Country object for each row and add to the database
-for index, row in countries_df.iterrows():
-    # Create a new Country object for each row
-    country = Country(
-        name=row['country'],
-        code=row['code']
-    )
-    # Save the Country object to the database
-    country.save()
+confirmation = input("Do you want to insert this data into the database? (y/n): ")
+if confirmation == 'y':
+    # Iterate through the Country DataForm to create a Country object for each row and add to the database
+    for index, row in countries_df.iterrows():
+        # Create a new Country object for each row
+        country = Country(
+            name=row['country'],
+            code=row['code']
+        )
+        # Save the Country object to the database
+        country.save()
 
 
 #Connect to the database
