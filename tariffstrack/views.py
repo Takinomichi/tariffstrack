@@ -12,7 +12,7 @@ def make_integer(tariff_list):
 
 def index(request):
     # get the list of tariffs from the Model database
-    tariff_list = Tariff.objects.order_by('country')
+    tariff_list = Tariff.objects.order_by('country__name')
     # Change the rates into integers percentages
     integer_tariff_list = make_integer(tariff_list)
     # pass the list as a context variable named "tariff_list"

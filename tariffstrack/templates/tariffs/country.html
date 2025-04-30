@@ -4,7 +4,7 @@
     <title>Trump Tariffs on {{ country_name }}</title>
 </head>
 <body>
-    <h1>Trump's Tariffs on {{ country_name }}</h1>
+    <h1>Trump Tariffs on {{ country_name }}</h1>
     <ul>
     {% for tariff in tariff_list %}
         <li>{{ tariff.country_id }} - {{ tariff.country }} - {{ tariff.rate }}% - {{ tariff.target }} - {{ tariff.target_type }} - {{ tariff.first_announced }} - {{ tariff.date_in_effect }}</li>
