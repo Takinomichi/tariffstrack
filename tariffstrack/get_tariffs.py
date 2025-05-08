@@ -36,9 +36,10 @@ def clean_tariff_data(df):
     return df
 
 def get_tariff_data():
-    url = "https://docs.google.com/spreadsheets/d/1s046O7ulAQ7d15TT-9-qtqemgGbEAGo5jF5ETEvyeXg/export?format=csv&id=1s046O7ulAQ7d15TT-9-qtqemgGbEAGo5jF5ETEvyeXg&gid=107324639"
-    #filename = "./tariffs.csv"
-    df = pd.read_csv(url)
+    # url = "https://docs.google.com/spreadsheets/d/1s046O7ulAQ7d15TT-9-qtqemgGbEAGo5jF5ETEvyeXg/export?format=csv&id=1s046O7ulAQ7d15TT-9-qtqemgGbEAGo5jF5ETEvyeXg&gid=107324639"
+    filename = "./tariffs.csv"
+    # df = pd.read_csv(url)
+    df = pd.read_csv(filename)
     return clean_tariff_data(df)
     #df.to_csv("tariffs.csv", index=False)
 
@@ -97,22 +98,27 @@ final_df = replace_country_names(df, countries) # Replace the country names in t
 
 print(final_df.to_string())
 
-confirmation = input("Do you want to insert this data into the database? (y/n): ")
+confirmation = input("Do you want to clear the tariff database in preparation for update? (y/n): ")
 if confirmation == 'y':
-    # Iterate through the Tariff DataForm to create a Tariff object for each row and add to the database
-    for index, row in final_df.iterrows():
-        # Create a new Tariff object for each row
-        tariff = Tariff(
-            country_id=row['Geography'],
-            target_type=row['Target type'],
-            target=row['Target'],
-            first_announced=row['First announced'],
-            date_in_effect=row['Date in effect'],
-            rate=row['Rate']
-        )
-        print(f"Inserting {row['Geography']} tariff into database...")
-        # Save the Tariff object to the database
-        tariff.save()
+    print("Clearing the tariffs database...")
+    Tariff.objects.all().delete()
+
+    confirmation = input("Do you want to insert this data into the database? (y/n): ")
+    if confirmation == 'y':
+        # Iterate through the Tariff DataForm to create a Tariff object for each row and add to the database
+        for index, row in final_df.iterrows():
+            # Create a new Tariff object for each row
+            tariff = Tariff(
+                country_id=row['Geography'],
+                target_type=row['Target type'],
+                target=row['Target'],
+                first_announced=row['First announced'],
+                date_in_effect=row['Date in effect'],
+                rate=row['Rate']
+            )
+            print(f"Inserting {row['Geography']}-{row['Rate']} tariff into database...")
+            # Save the Tariff object to the database
+            tariff.save()
 
 # confirmation = input("Do you want to insert this data into the database? (y/n): ")
 # if confirmation == 'y':
